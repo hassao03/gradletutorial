@@ -8,24 +8,24 @@ public class HelloWorld{
         Greeter greeter = new Greeter();
         System.out.println(greeter.sayHello());
 
-        Animal result = animalInfo();
-        System.out.println("Name: " + result.getName() + " " + "Age: " + result.getAge());
+        List <Animal> list = animalInfo();
 
-        for(int i =0; i < result; i++){
-            System.out.println("Name: " + result.getName() + " " + "Age: " + result.getAge());
+        for(int i = 0; i < list.size(); i++) {
+            System.out.println("Name: " + list.get(i).getName() + " " + "Age: " + list.get(i).getAge());
         }
-
 
     }
 
-    public static Animal animalInfo() {
-        Animal animal = new Animal("Has", 4);
-        //String name = animal.setName("Dog");
-        //int age = animal.setAge(2);
-        String name = "Dog";
-        int age = 2;
 
-        return new Animal(name, age);
+
+    public static List<Animal> animalInfo() {
+        List<Animal> animalList = new ArrayList<Animal>();
+        Animal dog = new Dog("Dog", 2);
+        Animal cat = new Cat("Cat", 6);
+        animalList.add(dog);
+        animalList.add(cat);
+
+        return (animalList);
     }
 
 }
