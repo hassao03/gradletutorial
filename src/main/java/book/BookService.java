@@ -9,32 +9,41 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService implements BookDAO {
 
-    public List<Book> getAllBooks() {
+    private List<Book> bookList;
+    Book book1;
 
-        List<Book> bookList = new ArrayList<Book>();
+    public BookService(){
+        this.bookList = new ArrayList<Book>();
+        initList();
 
-        Book book1 = new Book();
+    }
+
+    public BookService(List<Book> bookList){
+
+        this.bookList = bookList;
+    }
+
+    public void initList(){
+        book1 = new Book();
         book1.setName("book1");
         book1.setId("1");
         bookList.add(book1);
-
-        Book book2 = new Book();
-        book2.setName("book2");
-        book2.setId("2");
-        bookList.add(book2);
-
-        return bookList;
     }
 
-    public List<Book> getAll(){
 
-        return getAllBooks();
+    public int listSize(){
+        return bookList.size();
     }
+
+    public List<Book> getAllBooks() {
+
+        return this.bookList;
+    }
+
 
     public Book getBook(String id){
 
-        //orElse(null) ??
-        return getAllBooks().stream().filter(t -> t.getId().equals(id)).findFirst().get();
+        return getAllBooks().stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null);
     }
 
     public void addBook(Book book){

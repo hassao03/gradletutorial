@@ -1,13 +1,14 @@
 package book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import model.Book;
-import book.dao.BookDAO;
 
 @RestController
 public class BookController {
@@ -25,16 +26,19 @@ public class BookController {
     //delete a book
     @RequestMapping(method = RequestMethod.DELETE, value = "/books/{id}")
     public void deleteBook(@PathVariable String id){
+
         bookService.deleteBook(id);
     }
 
     //update a book
+
     @RequestMapping(method = RequestMethod.PUT, value = "/books/{id}")
     public void updateBook(@RequestBody Book book, @PathVariable String id){
          bookService.updateBook(book, id);
     }
 
     //add a book
+    @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, value = "/books")
     public void addBook(@RequestBody Book book){
         bookService.addBook(book);
@@ -42,16 +46,30 @@ public class BookController {
 
 
     //return book by id
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, value = "/books/{id}")
     public Book getBook(@PathVariable String id){
+
         return bookService.getBook(id);
     }
 
     //return all books
+    //@ResponseStatus(value = HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.GET, value = "/books")
-    public List<Book> getAll(){
-        return bookService.getAll();
+    public ResponseEntity<List<Book>> getAllBooks() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Responded", "BookController");
+
+        return ResponseEntity.accepted().headers(headers).body(bookService.getAllBooks());
+
+
     }
+
+
+
+
+
 
 }
 
