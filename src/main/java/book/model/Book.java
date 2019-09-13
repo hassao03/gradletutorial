@@ -1,18 +1,35 @@
 package model;
-import java.util.*;
+
 public class Book{
 
     String name;
-    String id;
+    int id;
+    int isbn;
 
-    public Book(String name, String id) {
-        this.name = name;
+
+
+
+    public Book(int id, String name,  int isbn) {
         this.id = id;
+        this.name = name;
+        this.isbn = isbn;
+
     }
 
     public Book(){
-
+        this.id = id;
+        this.name = name;
+        this.isbn = isbn;
     }
+
+    public int getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(int isbn) {
+        this.isbn = isbn;
+    }
+
 
     public String getName() {
         return name;
@@ -22,11 +39,11 @@ public class Book{
         this.name = name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

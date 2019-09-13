@@ -25,16 +25,44 @@ public class BookController {
 
     //delete a book
     @RequestMapping(method = RequestMethod.DELETE, value = "/books/{id}")
-    public void deleteBook(@PathVariable String id){
+    public void deleteBook(@PathVariable int id){
 
         bookService.deleteBook(id);
     }
 
+
+
     //update a book
 
     @RequestMapping(method = RequestMethod.PUT, value = "/books/{id}")
-    public void updateBook(@RequestBody Book book, @PathVariable String id){
-         bookService.updateBook(book, id);
+    public void updateBook(@PathVariable int id, @RequestBody Book book){
+         bookService.updateBook(id, book);
+    }
+
+
+
+
+    //return book by id
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, value = "/books/{id}")
+    public Book getBook(@PathVariable int id){
+
+        return bookService.getBook(id);
+    }
+
+
+
+    //return all books
+    //@ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RequestMapping(method = RequestMethod.GET, value = "/books")
+    public ResponseEntity<Map<Integer, Book>> getAllBooks() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Responded", "BookController");
+
+        return ResponseEntity.accepted().headers(headers).body(bookService.getAllBooks());
+
+
     }
 
     //add a book
@@ -45,29 +73,6 @@ public class BookController {
     }
 
 
-    //return book by id
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, value = "/books/{id}")
-    public Book getBook(@PathVariable String id){
-
-        return bookService.getBook(id);
-    }
-
-    //return all books
-    //@ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @RequestMapping(method = RequestMethod.GET, value = "/books")
-    public ResponseEntity<List<Book>> getAllBooks() {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "BookController");
-
-        return ResponseEntity.accepted().headers(headers).body(bookService.getAllBooks());
-
-
-    }
-
-
-
 
 
 
@@ -75,6 +80,6 @@ public class BookController {
 
 
 //Use the following in normal terminal while the server is running in intellij
-//curl -X POST localhost:8080/books -H 'Content-type:application/json' -d '{"name": "omar", "id": "4"}'
-//curl -X PUT localhost:8080/books/1 -H 'Content-type:application/json' -d '{"name": "Omar", "id": "222"}'
-//curl -X DELETE localhost:8080/books/1 -H 'Content-type:application/json' -d '{"name": "Book1", "id": "1"}'
+//curl -X POST localhost:8080/books -H 'Content-type:application/json' -d '{"id": "2", "name": "book1", "isbn":"123123"}'
+//curl -X PUT localhost:8080/books/2 -H 'Content-type:application/json' -d '{"id": "2", "name": "book1", "isbn":"123123"}'
+//curl -X DELETE localhost:8080/books/2 -H 'Content-type:application/json' -d '{"id": "2", "name": "book1", "isbn":"123123"}'

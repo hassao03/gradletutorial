@@ -1,5 +1,6 @@
 package book;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import book.dao.BookDAO;
 import model.Book;
@@ -9,25 +10,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService implements BookDAO {
 
-    private List<Book> bookList;
+    private Map<Integer, Book> bookList;
+    int idIndex = 1;
     Book book1;
 
     public BookService(){
-        this.bookList = new ArrayList<Book>();
+        this.bookList = new HashMap<Integer, Book>();
         initList();
 
     }
 
-    public BookService(List<Book> bookList){
+    public BookService(Map<Integer, Book> bookList){
 
         this.bookList = bookList;
     }
 
     public void initList(){
         book1 = new Book();
+        book1.setId(1);
         book1.setName("book1");
-        book1.setId("1");
-        bookList.add(book1);
+        book1.setIsbn(123123);
+        bookList.put(1, book1);
     }
 
 
@@ -35,37 +38,33 @@ public class BookService implements BookDAO {
         return bookList.size();
     }
 
-    public List<Book> getAllBooks() {
+    public Map<Integer, Book> getAllBooks() {
 
         return this.bookList;
     }
 
 
-    public Book getBook(String id){
-
-        return getAllBooks().stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null);
+    public Book getBook(int id){
+        return bookList.get(id);
     }
 
     public void addBook(Book book){
-        getAllBooks().add(book);
+
+        idIndex += idIndex;
+        book.setId(idIndex);
+        getAllBooks().put(idIndex, book);
 
     }
 
-    public void updateBook(Book updateBook, String id){
+    public void updateBook(int id, Book book){
 
-        for(int i=0; i< getAllBooks().size();i++){
-            Book book = getAllBooks().get(i);
-
-            if(book.getId().equals(id)){
-                getAllBooks().set(i, updateBook);
-            }
-        }
+        getAllBooks().put(id,book);
 
     }
 
-    public void deleteBook(String id){
+    public void deleteBook(int id){
 
-        getAllBooks().removeIf(t->t.getId().equals(id));
+        getAllBooks().remove(id);
     }
 
 }

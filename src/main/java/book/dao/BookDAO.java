@@ -5,5 +5,6 @@ import model.Book;
 
 public interface BookDAO{
 
-    public List<Book> getAllBooks();
+    //public List<Book> getAllBooks();
+    public Map<Integer, Book> getAllBooks();
 }
