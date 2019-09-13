@@ -1,5 +1,6 @@
 package book;
 
+import book.Service.BookService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class BookControllerTest {
+public class BookUIControllerTest {
 
     BookService bookService;
     @LocalServerPort

@@ -35,4 +35,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.postgresql:postgresql')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+
 }

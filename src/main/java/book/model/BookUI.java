@@ -1,35 +1,22 @@
 package book.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serializable;
+public class BookUI {
 
-@Entity
-@Table(name = "book")
-public class Book implements Serializable {
-
-    private static final long serialVersionUID = -2343243243242432341L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
-    @Column(name = "name")
     String name;
-    @Column(name = "isbn")
+    int id;
     int isbn;
 
-    public Book(int id, String name, int isbn) {
+
+
+
+    public BookUI(int id, String name, int isbn) {
         this.id = id;
         this.name = name;
         this.isbn = isbn;
 
     }
 
-    public Book(){
+    public BookUI(){
         this.id = id;
         this.name = name;
         this.isbn = isbn;
@@ -42,6 +29,7 @@ public class Book implements Serializable {
     public void setIsbn(int isbn) {
         this.isbn = isbn;
     }
+
 
     public String getName() {
         return name;
