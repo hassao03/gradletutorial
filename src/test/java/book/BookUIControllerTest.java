@@ -1,6 +1,5 @@
 package book;
 
-import book.Service.BookService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class BookUIControllerTest {
 
-    BookService bookService;
+    //BookService bookService;
     @LocalServerPort
     int randomServerPort;
 

@@ -6,13 +6,11 @@ public class BookUI {
     int id;
     int isbn;
 
-
-
-
     public BookUI(int id, String name, int isbn) {
         this.id = id;
         this.name = name;
         this.isbn = isbn;
+
 
     }
 
@@ -29,7 +27,6 @@ public class BookUI {
     public void setIsbn(int isbn) {
         this.isbn = isbn;
     }
-
 
     public String getName() {
         return name;

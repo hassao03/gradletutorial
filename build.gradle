@@ -39,4 +39,8 @@ dependencies {
     implementation('org.postgresql:postgresql')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
+    testCompile group: 'io.cucumber', name: 'cucumber-java', version: '4.3.0'
+    testCompile group: 'io.cucumber', name: 'cucumber-junit', version: '4.3.0'
+    testCompile group: 'io.cucumber', name: 'cucumber-spring', version: '4.3.0'
+
 }

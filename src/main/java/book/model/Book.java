@@ -1,11 +1,6 @@
 package book.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -21,19 +16,33 @@ public class Book implements Serializable {
     String name;
     @Column(name = "isbn")
     int isbn;
+    @ManyToOne
+    @JoinColumn(name="book_category_id")
+    BookCategory bookCategory;
+
+    public Book(int id, String name, int isbn, BookCategory bookCategory) {
+        this.id = id;
+        this.name = name;
+        this.isbn = isbn;
+        this.bookCategory = bookCategory;
+
+    }
 
     public Book(int id, String name, int isbn) {
         this.id = id;
         this.name = name;
         this.isbn = isbn;
 
-    }
 
+    }
     public Book(){
         this.id = id;
         this.name = name;
         this.isbn = isbn;
     }
+
+
+
 
     public int getIsbn() {
         return isbn;
@@ -58,6 +67,16 @@ public class Book implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+
+    public BookCategory getBookCategory() {
+        return bookCategory;
+    }
+
+    public void setBookCategory(BookCategory bookCategory) {
+        this.bookCategory = bookCategory;
+    }
+
 
 
 }

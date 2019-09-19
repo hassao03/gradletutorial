@@ -1,13 +1,15 @@
 package book;
 
+import book.model.Book;
+import book.model.BookCategory;
 import book.model.BookUI;
-import book.Service.BookService;
+import book.repository.BookCategoryRepository;
+import book.repository.BookRepository;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
@@ -16,26 +18,28 @@ import static org.junit.Assert.*;
 
 public class BookUIServiceTest {
 
-    private BookService bookService;
+    private BookCategoryRepository bookCategoryRepository;
+    private BookRepository bookRepository;
     int idIndex = 1;
 
     //This runs before any test method.
     @Before
     public void setUp() {
-        this.bookService = new BookService();
+        //this.bookService = new BookService();
     }
 
 
     @Test
     public void getBook(){
 
-        Map<Integer, BookUI> results = bookService.getAllBooks();
-        BookUI resultBook = results.get(1);
+        //Map<Integer, BookUI> results = bookService.getAllBooks();
+        List<Book> results = bookRepository.findAll();
+        Book resultBook = results.get(1);
         assertEquals(1, resultBook.getId());
 
 
     }
-
+/*
     @Test
     public void addBook(){
 
@@ -43,7 +47,7 @@ public class BookUIServiceTest {
 
         List<BookUI> listBook = new ArrayList<BookUI>();
         listBook.add(book1);
-        assertEquals(bookService.listSize(), 1);
+        assertEquals(bookRepository.listSize(), 1);
 
     }
 
@@ -80,5 +84,5 @@ public class BookUIServiceTest {
 
 
     }
-
+*/
 }
