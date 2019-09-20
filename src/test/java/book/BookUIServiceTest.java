@@ -1,14 +1,11 @@
 package book;
 
 import book.model.Book;
-import book.model.BookCategory;
-import book.model.BookUI;
 import book.repository.BookCategoryRepository;
 import book.repository.BookRepository;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;

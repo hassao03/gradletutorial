@@ -1,5 +1,8 @@
 package book.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +22,9 @@ public class BookCategory {
     @Column(name = "name")
     String name;
     @Access(AccessType.PROPERTY)
-    @OneToMany(mappedBy = "bookCategory", cascade = CascadeType.MERGE)
 
+    @OneToMany(mappedBy = "bookCategory", cascade = CascadeType.MERGE)
+    @JsonManagedReference
     Set<Book> books;
 
     public BookCategory(){

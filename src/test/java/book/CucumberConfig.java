@@ -1,6 +1,7 @@
 package book;
 
-import org.junit.Before;
+import book.repository.BookRepository;
+import cucumber.api.java.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,9 +22,15 @@ public class CucumberConfig {
     public String staticURL = "http://localhost:";
 
     public HttpHeaders httpHeaders;
+    BookRepository bookRepository;
 
-    @Before
+
+
+    //@Before
     public void setUp() throws Exception {
+        System.out.println("before----------------");
         httpHeaders = new HttpHeaders();
+        bookRepository.deleteAll();
     }
+
 }

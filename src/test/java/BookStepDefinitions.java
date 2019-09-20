@@ -1,19 +1,10 @@
 import book.CucumberConfig;
 import book.controller.BookController;
 import book.model.Book;
-import book.model.BookCategory;
-import book.model.BookUI;
 import book.repository.BookRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cucumber.api.java.en.*;
 import gherkin.deps.com.google.gson.JsonArray;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.mockito.internal.util.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,15 +13,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 
 public class BookStepDefinitions extends CucumberConfig {
@@ -97,6 +85,13 @@ public class BookStepDefinitions extends CucumberConfig {
         assertEquals(rsRmQuotes, jsonParsed);
     }
 
+    @Given("The db is empty")
+    public void theDbIsEmpty() {
+        String URI = "/showbooks";
+        responseEntity = testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
+        assertEquals("[]", responseEntity.getBody());
+    }
+
     @When("I call the add books endpoint")
     public void iCallTheAddBooksEndpoint() {
         String URI = "/addbook";
@@ -122,8 +117,8 @@ public class BookStepDefinitions extends CucumberConfig {
 
         responseEntity = testRestTemplate.postForEntity(getCompleteEndPoint(URI), request, String.class);
         //String getBody = responseEntity.getBody();
-        //assertEquals(CREATED, responseEntity.getStatusCode());
-        assertEquals(true, responseEntity.getBody().contains("Book added"));
+        assertEquals(CREATED, responseEntity.getStatusCode());
+        //assertEquals(true, responseEntity.getBody().contains("Book added"));
 
     }
 
@@ -151,7 +146,7 @@ public class BookStepDefinitions extends CucumberConfig {
     }
 
 
-    @Given("I update a book with id <id> with a new name <name>")
+    @Given("I update a book with a given id")
     public void iUpdateABookWithIdIdWithANewNameName() {
 
         String URI = "/updatebook/2";
@@ -170,7 +165,7 @@ public class BookStepDefinitions extends CucumberConfig {
     }
 
 
-    @Then("A book with id <id> should have a name <name>")
+    @Then("A book with the given id should exist")
     public void aBookWithIdIdShouldHaveANameName(final List<Map<String, String>> jsonPaths) throws IOException {
         String URI = "/search/2";
         responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
@@ -179,12 +174,53 @@ public class BookStepDefinitions extends CucumberConfig {
 
             String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "");
             String jsonParsed = jsonPathsRmSpace.toString().replace("=", ":");
+            String str = jsonParsed.replaceAll("\\[|\\]", "");
             String rs = responseEntity.getBody();
             String rsRmQuotes = rs.replaceAll("\"", "");
-            assertEquals(jsonParsed,rsRmQuotes);
+            assertEquals(str,rsRmQuotes);
         }
 
     }
+
+
+    @Given("There is a book with id {int} in the db")
+    public void thereIsABookWithIdInTheDb(int id) {
+        String URI = "/addbook";
+        Book book = new Book(2, "Book2", 555);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<Book> request = new HttpEntity<>(book, headers);
+
+        responseEntity = testRestTemplate.postForEntity(getCompleteEndPoint(URI), request, String.class);
+
+    }
+
+    @When("I delete a book with id {int}")
+    public void iDeleteABookWithId(int id) {
+
+        String URI = "/deletebyid/2";
+
+        Map<String, Integer> params = new HashMap<>();
+        params.put("id", id);
+        testRestTemplate.delete(getCompleteEndPoint(URI), params);
+
+
+    }
+
+
+
+
+    @And("I call show books i should receive {int}")
+    public void iCallShowBooksIShouldReceive(int statusCode) {
+        String URI = "/search/2";
+        responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
+        assertEquals(statusCode, responseEntity.getStatusCode().value());
+    }
+
+
+
 }
 
 
