@@ -1,4 +1,5 @@
 import book.CucumberConfig;
+import book.Hooks;
 import book.controller.BookController;
 import book.model.Book;
 import book.repository.BookRepository;
@@ -6,8 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import cucumber.api.java.en.*;
 import gherkin.deps.com.google.gson.JsonArray;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 
@@ -28,14 +31,19 @@ public class BookStepDefinitions extends CucumberConfig {
     BookRepository bookRepository;
     private TestRestTemplate restTemplate;
     List<Book> bookList = new ArrayList<>();
+    Hooks hooks;
 
 
-    public BookStepDefinitions(BookController bookController) {
+
+
+    public BookStepDefinitions(BookController bookController, Hooks hooks) {
         this.bookController = bookController;
+        this.hooks = hooks;
     }
 
     public String getCompleteEndPoint(String URI) {
         return staticURL + port + URI;
+
     }
 
     @When("I call the list all books endpoint")
@@ -82,7 +90,11 @@ public class BookStepDefinitions extends CucumberConfig {
         String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "");
         String jsonParsed = jsonPathsRmSpace.toString().replace("=", ":");
         String rsRmQuotes = rs.replaceAll("\"", "");
-        assertEquals(rsRmQuotes, jsonParsed);
+        assertEquals(jsonParsed,rsRmQuotes);
+
+
+
+
     }
 
     @Given("The db is empty")
@@ -136,16 +148,30 @@ public class BookStepDefinitions extends CucumberConfig {
 
         for (int i = 0; i < jsonPaths.size(); i++) {
 
-            String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "");
-            String jsonParsed = jsonPathsRmSpace.toString().replace("=", ":");
+            String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "").replace("=",":").replace("[","").replace("]","");
             String rs = responseEntity.getBody();
             String rsRmQuotes = rs.replaceAll("\"", "");
-            assertEquals(jsonParsed,rsRmQuotes);
+            assertEquals(jsonPathsRmSpace,rsRmQuotes);
         }
 
     }
 
+    @Given("I add a new book")
+    public void IAddANewBook() {
 
+        String URI = "/addbook";
+        Book book = new Book(2, "Book2", 555);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<Book> request = new HttpEntity<>(book, headers);
+
+        responseEntity = testRestTemplate.postForEntity(getCompleteEndPoint(URI), request, String.class);
+
+
+
+    }
     @Given("I update a book with a given id")
     public void iUpdateABookWithIdIdWithANewNameName() {
 
@@ -178,7 +204,11 @@ public class BookStepDefinitions extends CucumberConfig {
             String rs = responseEntity.getBody();
             String rsRmQuotes = rs.replaceAll("\"", "");
             assertEquals(str,rsRmQuotes);
+
+
         }
+
+
 
     }
 
@@ -217,6 +247,11 @@ public class BookStepDefinitions extends CucumberConfig {
         String URI = "/search/2";
         responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
         assertEquals(statusCode, responseEntity.getStatusCode().value());
+
+
+
+
+
     }
 
 

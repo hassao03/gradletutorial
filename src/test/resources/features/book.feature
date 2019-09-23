@@ -11,11 +11,11 @@ Feature: book operations
     And the JSON paths below are satisfied:
 
       | id           | name      |isbn |
-      | 1            | Book1     | 123 |
+      | 2            | Book1     | 123 |
 
   #@test
   Scenario: Create a new book
-    #Given The db is empty
+    Given The db is empty
     When I call the add books endpoint
     Then I should receive a response with status code 405
     Then I should be able to add a book
@@ -23,10 +23,11 @@ Feature: book operations
     And I should be able to find this book in the system by name
 
       | id           | name      |isbn |
-      | 2            | Book2     | 555 |
+      | 3            | Book2     | 555 |
 
   #@test
   Scenario: Update a book
+    Given I add a new book
     Given I update a book with a given id
     Then A book with the given id should exist
 

@@ -1,9 +1,11 @@
 package book;
 
+import book.model.Book;
 import book.repository.BookRepository;
 import cucumber.api.java.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +17,8 @@ public class CucumberConfig {
 
     @Autowired
     public TestRestTemplate testRestTemplate;
-
+    @Autowired
+    //public JacksonTester<Book> json;
     @LocalServerPort
     public int port;
 
@@ -26,11 +29,11 @@ public class CucumberConfig {
 
 
 
-    //@Before
+    /*@Before
     public void setUp() throws Exception {
         System.out.println("before----------------");
         httpHeaders = new HttpHeaders();
         bookRepository.deleteAll();
-    }
+    }*/
 
 }

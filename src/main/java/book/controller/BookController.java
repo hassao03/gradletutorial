@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.*;
 
 @RestController
@@ -38,6 +39,15 @@ public class BookController {
             bookRepository.save(new Book(2,"Book2",123));
         };
     }
+
+    @DeleteMapping("/deleteall")
+    public void deleteAllBooks() {
+
+        if(bookRepository.findAll()!= null) {
+            bookRepository.deleteAll();
+        }
+    }
+
     @GetMapping("/add")
     public ResponseEntity<String> add(){
         BookCategory categoryA = new BookCategory("Category A");
