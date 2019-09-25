@@ -24,7 +24,6 @@ public class BookController {
 
     @RequestMapping("/")
     public String index() {
-
         return "Book Controller!";
     }
 
@@ -32,6 +31,10 @@ public class BookController {
     BookRepository bookRepository;
     @Autowired
     BookCategoryRepository bookCategoryRepository;
+
+    public BookController(@Autowired BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     @Bean
     CommandLineRunner init (BookRepository bookRepository){
@@ -43,7 +46,7 @@ public class BookController {
     @DeleteMapping("/deleteall")
     public void deleteAllBooks() {
 
-        if(bookRepository.findAll()!= null) {
+        if (bookRepository.findAll()!= null) {
             bookRepository.deleteAll();
         }
     }
@@ -67,19 +70,17 @@ public class BookController {
 
     @GetMapping("/showbooks")
     public ResponseEntity<List<Book>> findAll(){
-
         List<Book> books = bookRepository.findAll();
 
-        if(!books.isEmpty())
-            return new ResponseEntity<List<Book>>(books, HttpStatus.OK);
-
-        return new ResponseEntity<List<Book>>(books, HttpStatus.BAD_REQUEST);
-
+        if (books.isEmpty()) {
+            return new ResponseEntity<List<Book>>(books, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<List<Book>>(books, HttpStatus.OK);
     }
 
     @RequestMapping("/search/{id}")
     public ResponseEntity<Book> search(@PathVariable int id){
-        Optional<Book> books = bookRepository.findById(id);
+        //Optional<Book> books = bookRepository.findById(id);
 
         return bookRepository.findById(id).map(cat -> ResponseEntity.ok().body(cat))
                 .orElse(ResponseEntity.noContent().build());
@@ -106,7 +107,7 @@ public class BookController {
 
     }
 
-    //@PutMapping("/updatebook/{id}")
+
     @RequestMapping(method = RequestMethod.POST, value = "/updatebook/{id}")
     public ResponseEntity<String> updateBook(@RequestBody Book book, @PathVariable int id) {
 

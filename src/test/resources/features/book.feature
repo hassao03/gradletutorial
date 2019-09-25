@@ -10,8 +10,8 @@ Feature: book operations
     And I should get a list of books created
     And the JSON paths below are satisfied:
 
-      | id           | name      |isbn |
-      | 2            | Book1     | 123 |
+      | id | name  | isbn |
+      | 2  | Book1 | 123  |
 
   #@test
   Scenario: Create a new book
@@ -22,8 +22,8 @@ Feature: book operations
     And I should get a list of books added
     And I should be able to find this book in the system by name
 
-      | id           | name      |isbn |
-      | 3            | Book2     | 555 |
+      | id | name  | isbn |
+      | 3  | Book2 | 555  |
 
   #@test
   Scenario: Update a book
@@ -31,11 +31,11 @@ Feature: book operations
     Given I update a book with a given id
     Then A book with the given id should exist
 
-      | id           | name      |isbn |
-      | 2            | Book4     | 444 |
+      | id | name  | isbn |
+      | 2  | Book4 | 444  |
 
   @test
   Scenario: Delete a book
-    Given There is a book with id 2 in the db
+    Given I add a book with id 2 in the db
     When I delete a book with id 2
     And I call show books i should receive 204

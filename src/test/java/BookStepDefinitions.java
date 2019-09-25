@@ -34,8 +34,6 @@ public class BookStepDefinitions extends CucumberConfig {
     Hooks hooks;
 
 
-
-
     public BookStepDefinitions(BookController bookController, Hooks hooks) {
         this.bookController = bookController;
         this.hooks = hooks;
@@ -60,6 +58,7 @@ public class BookStepDefinitions extends CucumberConfig {
 
     @And("I should get a list of books created")
     public void iShouldGetAListOfBooks() {
+
 
         assertEquals(true, responseEntity.getBody().contains("Books are created"));
     }
@@ -90,9 +89,7 @@ public class BookStepDefinitions extends CucumberConfig {
         String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "");
         String jsonParsed = jsonPathsRmSpace.toString().replace("=", ":");
         String rsRmQuotes = rs.replaceAll("\"", "");
-        assertEquals(jsonParsed,rsRmQuotes);
-
-
+        assertEquals(jsonParsed, rsRmQuotes);
 
 
     }
@@ -135,7 +132,6 @@ public class BookStepDefinitions extends CucumberConfig {
     }
 
 
-
     @And("I should get a list of books added")
     public void iShouldGetAListOfBooksAdded() {
         assertNotNull(responseEntity.getBody());
@@ -148,10 +144,14 @@ public class BookStepDefinitions extends CucumberConfig {
 
         for (int i = 0; i < jsonPaths.size(); i++) {
 
-            String jsonPathsRmSpace = jsonPaths.toString().replaceAll("\\s", "").replace("=",":").replace("[","").replace("]","");
+            String jsonPathsRmSpace = jsonPaths.toString().
+                    replaceAll("\\s", "").
+                    replace("=", ":").
+                    replace("[", "").
+                    replace("]", "");
             String rs = responseEntity.getBody();
             String rsRmQuotes = rs.replaceAll("\"", "");
-            assertEquals(jsonPathsRmSpace,rsRmQuotes);
+            assertEquals(jsonPathsRmSpace, rsRmQuotes);
         }
 
     }
@@ -170,8 +170,8 @@ public class BookStepDefinitions extends CucumberConfig {
         responseEntity = testRestTemplate.postForEntity(getCompleteEndPoint(URI), request, String.class);
 
 
-
     }
+
     @Given("I update a book with a given id")
     public void iUpdateABookWithIdIdWithANewNameName() {
 
@@ -203,18 +203,15 @@ public class BookStepDefinitions extends CucumberConfig {
             String str = jsonParsed.replaceAll("\\[|\\]", "");
             String rs = responseEntity.getBody();
             String rsRmQuotes = rs.replaceAll("\"", "");
-            assertEquals(str,rsRmQuotes);
+            assertEquals(str, rsRmQuotes);
 
 
         }
 
 
-
     }
-
-
-    @Given("There is a book with id {int} in the db")
-    public void thereIsABookWithIdInTheDb(int id) {
+    @Given("I add a book with id {int} in the db")
+    public void iAddABookWithIdInTheDb(int id) {
         String URI = "/addbook";
         Book book = new Book(2, "Book2", 555);
 
@@ -226,6 +223,7 @@ public class BookStepDefinitions extends CucumberConfig {
         responseEntity = testRestTemplate.postForEntity(getCompleteEndPoint(URI), request, String.class);
 
     }
+
 
     @When("I delete a book with id {int}")
     public void iDeleteABookWithId(int id) {
@@ -240,16 +238,11 @@ public class BookStepDefinitions extends CucumberConfig {
     }
 
 
-
-
     @And("I call show books i should receive {int}")
     public void iCallShowBooksIShouldReceive(int statusCode) {
         String URI = "/search/2";
         responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
         assertEquals(statusCode, responseEntity.getStatusCode().value());
-
-
-
 
 
     }

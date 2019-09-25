@@ -11,11 +11,12 @@ public class Hooks {
     BookRepository bookRepository;
     BookController bookController;
 
-    public Hooks(BookController bookController){
+    public Hooks(BookController bookController) {
         this.bookController = bookController;
     }
+
     @Before
-    public void beforeScenario(){
+    public void beforeScenario() {
         System.out.println("This will run before the Scenario");
         httpHeaders = new HttpHeaders();
 
@@ -24,7 +25,7 @@ public class Hooks {
     }
 
     @After
-    public void afterScenario(){
+    public void afterScenario() {
         System.out.println("This will run after the Scenario");
     }
 }
