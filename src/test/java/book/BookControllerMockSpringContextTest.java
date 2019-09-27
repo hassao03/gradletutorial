@@ -17,6 +17,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ public class BookControllerMockSpringContextTest {
     ResponseEntity<String> response;
 
     @Test
-    public void testSearchByID(){
+    public void testSearchByID() throws IOException {
 
         when(bookRepository.findAll()).thenReturn(Collections.emptyList());
         assertEquals(HttpStatus.NO_CONTENT,bookController.search(2));

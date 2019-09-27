@@ -34,8 +34,17 @@ Feature: book operations
       | id | name  | isbn |
       | 2  | Book4 | 444  |
 
-  @test
+  #@test
   Scenario: Delete a book
     Given I add a book with id 2 in the db
     When I delete a book with id 2
     And I call show books i should receive 204
+
+  @test
+  Scenario: Search by id
+    Given The database is empty
+    When I search for a book with id 1
+    Then I should receive a response with status code of 204
+    Then I create a stub with wiremock
+    And I should be able to find the book with id 1 in the system
+    And return status code 200

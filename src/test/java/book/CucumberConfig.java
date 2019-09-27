@@ -1,8 +1,13 @@
 package book;
 
+import book.fetcher.BookFetcher;
 import book.model.Book;
 import book.repository.BookRepository;
-import cucumber.api.java.Before;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+import cucumber.api.java.*;
+
+import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
@@ -18,22 +23,12 @@ public class CucumberConfig {
     @Autowired
     public TestRestTemplate testRestTemplate;
     @Autowired
-    //public JacksonTester<Book> json;
+
     @LocalServerPort
     public int port;
 
     public String staticURL = "http://localhost:";
-
-    public HttpHeaders httpHeaders;
-    BookRepository bookRepository;
-
-
-
-    /*@Before
-    public void setUp() throws Exception {
-        System.out.println("before----------------");
-        httpHeaders = new HttpHeaders();
-        bookRepository.deleteAll();
-    }*/
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(8090);
 
 }

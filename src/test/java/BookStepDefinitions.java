@@ -1,6 +1,7 @@
 import book.CucumberConfig;
 import book.Hooks;
 import book.controller.BookController;
+import book.fetcher.BookFetcher;
 import book.model.Book;
 import book.repository.BookRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +20,8 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.Map;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.*;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,15 +31,16 @@ public class BookStepDefinitions extends CucumberConfig {
 
     private ResponseEntity<String> responseEntity;
     private BookController bookController;
-    BookRepository bookRepository;
-    private TestRestTemplate restTemplate;
-    List<Book> bookList = new ArrayList<>();
     Hooks hooks;
+    BookFetcher bookFetcher;
+
 
 
     public BookStepDefinitions(BookController bookController, Hooks hooks) {
         this.bookController = bookController;
         this.hooks = hooks;
+        this.bookFetcher = new BookFetcher("http://localhost:8090");
+
     }
 
     public String getCompleteEndPoint(String URI) {
@@ -247,9 +251,50 @@ public class BookStepDefinitions extends CucumberConfig {
 
     }
 
+    @Given("The database is empty")
+    public void theDatabaseIsEmpty() {
+        String URI = "/showbooks";
+        responseEntity = testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
+        assertEquals("[]", responseEntity.getBody());
+    }
+
+    @When("I search for a book with id {int}")
+    public void iSearchForABookWithId(int id) {
+        String URI = "/search/" + id;
+        responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
+        
+    }
+
+    @Then("I should receive a response with status code of {int}")
+    public void iShouldReceiveAResponseWithStatusCodeOf(int statusCode) {
+        assertEquals(statusCode, responseEntity.getStatusCode().value());
+    }
+
+    @Then("I create a stub with wiremock")
+    public void iCreateAStubWithWiremock() throws IOException {
+
+        wireMockRule.givenThat(get(urlEqualTo("/books/1"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody("{ \"id\": \"1\", \"name\": \"Book1\",\"isbn\": \"123\" }")));
 
 
+        bookFetcher.getFromEndpoint("1");
+
+    }
+
+    @And("I should be able to find the book with id {int} in the system")
+    public void iShouldBeAbleToFindTheBookWithIdInTheSystem(int id) throws IOException {
+        String URI = "/search/" + id;
+        responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
+        //Add a flag to check that the response originates from bookFetcher
+        assertEquals("1", responseEntity.getBody().contains("1"));
+    }
+
+    @And("return status code {int}")
+    public void returnStatusCode(int statusCode) {
+
+        assertEquals(statusCode, responseEntity.getStatusCode().value());
+    }
 }
-
-
-//curl -X POST localhost:9090/addbook -H 'Content-type:application/json' -d '{"id": "2", "name": "book1", "isbn":"123123"}'

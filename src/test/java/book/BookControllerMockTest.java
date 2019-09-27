@@ -32,6 +32,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.mockito.Mockito.when;
@@ -78,7 +79,7 @@ public class BookControllerMockTest {
     }
 
     @Test
-    public void testSearchById() {
+    public void testSearchById() throws IOException {
         // Given
         given(bookRepository.findById(1)).willReturn(Optional.of(new Book(1, "Book1", 123)));
 

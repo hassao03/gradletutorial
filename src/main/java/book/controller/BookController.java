@@ -1,4 +1,5 @@
 package book.controller;
+import book.fetcher.BookFetcher;
 import book.model.Book;
 import book.model.BookCategory;
 import book.repository.BookCategoryRepository;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Null;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -32,8 +33,11 @@ public class BookController {
     @Autowired
     BookCategoryRepository bookCategoryRepository;
 
+    BookFetcher bookFetcher;
+
     public BookController(@Autowired BookRepository bookRepository) {
         this.bookRepository = bookRepository;
+        this.bookFetcher = new BookFetcher("http://localhost:8090");
     }
 
     @Bean
@@ -79,11 +83,22 @@ public class BookController {
     }
 
     @RequestMapping("/search/{id}")
-    public ResponseEntity<Book> search(@PathVariable int id){
-        //Optional<Book> books = bookRepository.findById(id);
+    public ResponseEntity<Book> search(@PathVariable int id) throws IOException {
 
-        return bookRepository.findById(id).map(cat -> ResponseEntity.ok().body(cat))
-                .orElse(ResponseEntity.noContent().build());
+        Optional<Book> books = bookRepository.findById(id);
+
+        //String fetchFromBookFetcher = bookFetcher.getFromEndpoint(String.valueOf(id));
+
+        if(books.isPresent()){
+            return books.map(cat -> ResponseEntity.ok().body(cat))
+                    .orElse(ResponseEntity.noContent().build());
+
+        }/*else if(fetchFromBookFetcher.isEmpty()){
+            ResponseEntity.ok().body(bookFetcher);
+        }*/
+
+        return ResponseEntity.noContent().build();
+
     }
 
     @RequestMapping("/searchbyname/{name}")
