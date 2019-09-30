@@ -43,8 +43,8 @@ Feature: book operations
   @test
   Scenario: Search by id
     Given The database is empty
-    When I search for a book with id 1
-    Then I should receive a response with status code of 204
+    When I search for a book with id 3
+    Then I should receive a response with status code of 400
     Then I create a stub with wiremock
-    And I should be able to find the book with id 1 in the system
+    And I should be able to find the book with id 3 in the system
     And return status code 200

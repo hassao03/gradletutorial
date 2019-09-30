@@ -5,8 +5,11 @@ import book.fetcher.BookFetcher;
 import book.model.Book;
 import book.repository.BookRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import cucumber.api.java.en.*;
 import gherkin.deps.com.google.gson.JsonArray;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -32,14 +35,10 @@ public class BookStepDefinitions extends CucumberConfig {
     private ResponseEntity<String> responseEntity;
     private BookController bookController;
     Hooks hooks;
-    BookFetcher bookFetcher;
-
-
 
     public BookStepDefinitions(BookController bookController, Hooks hooks) {
         this.bookController = bookController;
         this.hooks = hooks;
-        this.bookFetcher = new BookFetcher("http://localhost:8090");
 
     }
 
@@ -262,7 +261,7 @@ public class BookStepDefinitions extends CucumberConfig {
     public void iSearchForABookWithId(int id) {
         String URI = "/search/" + id;
         responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
-        
+        assertEquals("Book with such id does not exist", responseEntity.getBody());
     }
 
     @Then("I should receive a response with status code of {int}")
@@ -273,23 +272,27 @@ public class BookStepDefinitions extends CucumberConfig {
     @Then("I create a stub with wiremock")
     public void iCreateAStubWithWiremock() throws IOException {
 
-        wireMockRule.givenThat(get(urlEqualTo("/books/1"))
+        hooks.wireMockServer.stubFor(get(urlEqualTo("/books/3"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "text/plain")
-                        .withBody("{ \"id\": \"1\", \"name\": \"Book1\",\"isbn\": \"123\" }")));
+                        .withBody("{ \"id\": \"3\", \"name\": \"Book3\",\"isbn\": \"333\" }")));
 
+        hooks.bookFetcher.getFromEndpoint("3");
 
-        bookFetcher.getFromEndpoint("1");
+        Assert.assertEquals("{ \"id\": \"3\", \"name\": \"Book3\",\"isbn\": \"333\" }", hooks.bookFetcher.getFromEndpoint("3"));
 
     }
+
 
     @And("I should be able to find the book with id {int} in the system")
     public void iShouldBeAbleToFindTheBookWithIdInTheSystem(int id) throws IOException {
         String URI = "/search/" + id;
         responseEntity = this.testRestTemplate.getForEntity(getCompleteEndPoint(URI), String.class);
-        //Add a flag to check that the response originates from bookFetcher
-        assertEquals("1", responseEntity.getBody().contains("1"));
+
+        //assertEquals("{ \"id\": 3, \"name\": Book3,\"isbn\": 333 }", responseEntity.getBody());
+        assertEquals("Book found from book fetcher", responseEntity.getBody());
+
     }
 
     @And("return status code {int}")
@@ -297,4 +300,7 @@ public class BookStepDefinitions extends CucumberConfig {
 
         assertEquals(statusCode, responseEntity.getStatusCode().value());
     }
+
+
+
 }

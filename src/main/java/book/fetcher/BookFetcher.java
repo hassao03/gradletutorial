@@ -38,6 +38,7 @@ public class BookFetcher {
             result.append(line);
         }
 
+
         // Return response body as string
         return result.toString();
         //return response.getStatusLine().getStatusCode();

@@ -37,7 +37,8 @@ public class BookController {
 
     public BookController(@Autowired BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.bookFetcher = new BookFetcher("http://localhost:8090");
+
+        this.bookFetcher = new BookFetcher("http://localhost:9090");
     }
 
     @Bean
@@ -83,21 +84,33 @@ public class BookController {
     }
 
     @RequestMapping("/search/{id}")
-    public ResponseEntity<Book> search(@PathVariable int id) throws IOException {
+    public ResponseEntity<String> search(@PathVariable int id) throws IOException {
 
         Optional<Book> books = bookRepository.findById(id);
 
-        //String fetchFromBookFetcher = bookFetcher.getFromEndpoint(String.valueOf(id));
+
+        //Optional<String> fetchFromBookFetcher = Optional.ofNullable(bookFetcher.getFromEndpoint(String.valueOf(id)));
+        String fetchFromBookFetcher = bookFetcher.getFromEndpoint(String.valueOf(id));
 
         if(books.isPresent()){
-            return books.map(cat -> ResponseEntity.ok().body(cat))
-                    .orElse(ResponseEntity.noContent().build());
 
-        }/*else if(fetchFromBookFetcher.isEmpty()){
-            ResponseEntity.ok().body(bookFetcher);
-        }*/
+            /*return books.map(cat -> ResponseEntity.ok().body(cat))
+                    .orElse(ResponseEntity.noContent().build());*/
+            return new ResponseEntity<String>("Book found from repository", HttpStatus.OK);
 
-        return ResponseEntity.noContent().build();
+        }else if(fetchFromBookFetcher.contains("Not Found")){
+            //ResponseEntity.ok().body(fetchFromBookFetcher);
+
+            return new ResponseEntity<String>("Book with such id does not exist in book fetcher", HttpStatus.BAD_REQUEST);
+
+        }else if(fetchFromBookFetcher.contains(String.valueOf(id))){
+            //ResponseEntity.ok().body(fetchFromBookFetcher);
+            System.out.println("bookfetcher body " + fetchFromBookFetcher);
+            return new ResponseEntity<String>("Book found from book fetcher", HttpStatus.OK);
+
+        }else{
+            return new ResponseEntity<String>("Book with such id does not exist", HttpStatus.BAD_REQUEST);
+        }
 
     }
 
